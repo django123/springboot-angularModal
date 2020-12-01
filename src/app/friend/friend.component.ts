@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Friend } from '../_models/friend';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { NgForm } from '@angular/forms';
+import { FriendService } from '../_services/friend.service';
 
 @Component({
   selector: 'app-friend',
@@ -18,6 +19,7 @@ export class FriendComponent implements OnInit {
   constructor(
 
     private httpClient: HttpClient,
+    private friendService: FriendService,
     private modalService: NgbModal
   ) { }
 
@@ -26,7 +28,7 @@ export class FriendComponent implements OnInit {
   }
 
   getFriends(){
-    this.httpClient.get<any>('http://localhost:8080/api/v1/friends').subscribe(
+    this.friendService.getAllFriend().subscribe(
       response => {
         console.log(response);
         this.friends = response;
@@ -53,8 +55,8 @@ private getDismissReason(reason: any): string {
 }
 
 onSubmit(f: NgForm) {
-  const url = 'http://localhost:8080/api/v1/friends/add';
-  this.httpClient.post(url, f.value)
+  
+  this.friendService.saveFriend(f.value)
     .subscribe((result) => {
       this.ngOnInit(); //reload the table
     });
